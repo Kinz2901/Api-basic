@@ -5,18 +5,18 @@ from app.db.user import User
 from app.models.user import User as UserModel
 router = APIRouter()
 
-@router.get("/all")
+@router.get("/all",dependencies=[Depends(get_db)])
 def read_users():
     return  list(User.select().dicts())
 
-@router.get("/{user_id}")
+@router.get("/{user_id}",dependencies=[Depends(get_db)])
 def read_user(user_id: int):
     user = User.get_or_none(User.id == user_id)
     if user:
         return user
     raise HTTPException(status_code=404, detail="User not found")
 
-@router.post("/")
+@router.post("/",dependencies=[Depends(get_db)])
 def create_user(user: UserModel):
     user = User.create(**{
         "username": user.username,
@@ -24,7 +24,7 @@ def create_user(user: UserModel):
     })
     return user
 
-@router.put("/{user_id}")
+@router.put("/{user_id}",dependencies=[Depends(get_db)])
 def update_user(user_id: int, user: UserModel):
     User.update(**{
         "username": user.username,
@@ -32,7 +32,7 @@ def update_user(user_id: int, user: UserModel):
     }).where(User.id == user_id).execute()
 
 
-@router.delete("/{user_id}")
+@router.delete("/{user_id}",dependencies=[Depends(get_db)])
 def delete_user(user_id: int):
     User.delete().where(User.id == user_id).execute()
     
