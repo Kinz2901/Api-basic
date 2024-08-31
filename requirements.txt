@@ -1,0 +1,7 @@
+fastapi[standard]
+uvicorn
+
+PyMySQL
+peewee
+
+python-dotenv
